@@ -17,3 +17,12 @@ def plot(scores, mean_scores):
     plt.text(len(mean_scores)-1, mean_scores[-1], str(mean_scores[-1]))
     plt.show(block=False)
     plt.pause(.1)
+    
+# --- Minimize the plot window ---
+    try:
+        # This works for TkAgg backend (default on many systems)
+        manager = plt.get_current_fig_manager()
+        if hasattr(manager.window, 'iconify'):
+            manager.window.iconify()
+    except Exception as e:
+        pass  # Ignore if backend does not support minimizing

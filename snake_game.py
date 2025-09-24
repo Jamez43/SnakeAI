@@ -6,7 +6,6 @@ import numpy as np
 
 pygame.init()
 font = pygame.font.Font('arial.ttf', 25)
-#font = pygame.font.SysFont('arial', 25)
 
 class Direction(Enum):
     RIGHT = 1
@@ -29,9 +28,9 @@ SPEED = 100
 class SnakeGameAI:
 
     def __init__(self, w=640, h=480):
+        #init display
         self.w = w
         self.h = h
-        # init display
         self.display = pygame.display.set_mode((self.w, self.h))
         pygame.display.set_caption('Snake')
         self.clock = pygame.time.Clock()
@@ -39,7 +38,7 @@ class SnakeGameAI:
 
 
     def reset(self):
-        # init game state
+        # init default game state
         self.direction = Direction.RIGHT
 
         self.head = Point(self.w/2, self.h/2)
@@ -50,7 +49,7 @@ class SnakeGameAI:
         self.score = 0
         self.food = None
         self._place_food()
-        self.frame_iteration = 0
+        self.frame_iteration = 0 # to prevent infinite loops
 
 
     def _place_food(self):
@@ -63,7 +62,7 @@ class SnakeGameAI:
 
     def play_step(self, action):
         self.frame_iteration += 1
-        # 1. collect user input
+        # 1. handle user quitting
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -81,7 +80,7 @@ class SnakeGameAI:
             reward = -10
             return reward, game_over, self.score
 
-        # 4. place new food or just move
+        # 4. place new food or just move(remove tail)
         if self.head == self.food:
             self.score += 1
             reward = 10
@@ -110,25 +109,34 @@ class SnakeGameAI:
 
 
     def _update_ui(self):
+        # set background
         self.display.fill(BLACK)
-
+        
+        
+        # draw snake
         for pt in self.snake:
+            # outer square
             pygame.draw.rect(self.display, BLUE1, pygame.Rect(pt.x, pt.y, BLOCK_SIZE, BLOCK_SIZE))
+            # inner square
             pygame.draw.rect(self.display, BLUE2, pygame.Rect(pt.x+4, pt.y+4, 12, 12))
 
+        # draw food
         pygame.draw.rect(self.display, RED, pygame.Rect(self.food.x, self.food.y, BLOCK_SIZE, BLOCK_SIZE))
 
+        # draw score
         text = font.render("Score: " + str(self.score), True, WHITE)
         self.display.blit(text, [0, 0])
+        
         pygame.display.flip()
 
 
     def _move(self, action):
-        # [straight, right, left]
+        # action space = [straight, right, left]
 
         clock_wise = [Direction.RIGHT, Direction.DOWN, Direction.LEFT, Direction.UP]
         idx = clock_wise.index(self.direction)
 
+        # change direction based on action
         if np.array_equal(action, [1, 0, 0]):
             new_dir = clock_wise[idx] # no change
         elif np.array_equal(action, [0, 1, 0]):
@@ -140,6 +148,7 @@ class SnakeGameAI:
 
         self.direction = new_dir
 
+        # update the head
         x = self.head.x
         y = self.head.y
         if self.direction == Direction.RIGHT:

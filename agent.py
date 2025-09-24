@@ -70,10 +70,14 @@ class Agent:
 
         return np.array(state, dtype=int)
 
+    # stores the experience in memory
     def remember(self, state, action, reward, next_state, done):
         self.memory.append((state, action, reward, next_state, done)) # popleft if MAX_MEMORY is reached
 
+
+    # trains the model with a batch of experiences
     def train_long_memory(self):
+        # sample a batch of experiences from memory if memory is too large
         if len(self.memory) > BATCH_SIZE:
             mini_sample = random.sample(self.memory, BATCH_SIZE) # list of tuples
         else:
@@ -84,6 +88,7 @@ class Agent:
         #for state, action, reward, nexrt_state, done in mini_sample:
         #    self.trainer.train_step(state, action, reward, next_state, done)
 
+    # updates model with one step
     def train_short_memory(self, state, action, reward, next_state, done):
         self.trainer.train_step(state, action, reward, next_state, done)
 
@@ -91,10 +96,13 @@ class Agent:
         # random moves: tradeoff exploration / exploitation
         self.epsilon = 80 - self.n_games
         final_move = [0,0,0]
+        
+        # random move
         if random.randint(0, 200) < self.epsilon:
             move = random.randint(0, 2)
             final_move[move] = 1
         else:
+            # greedy move
             state0 = torch.tensor(state, dtype=torch.float).to(device)  # Move tensor to GPU
             prediction = self.model(state0)
             move = torch.argmax(prediction).item()
@@ -127,6 +135,7 @@ def train():
         # remember
         agent.remember(state_old, final_move, reward, state_new, done)
 
+        # if game over
         if done:
             # train long memory, plot result
             game.reset()
