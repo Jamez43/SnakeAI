@@ -7,6 +7,6 @@ This project applies reinforcement learning to teach an AI agent to play Snake. 
 - Training loop with performance tracking across episodes
 - Visual interface to watch the AI play in real time
 
-# Watch A Demo Video
+# Click Image To Watch A Demo Video
 [![Watch the video](thumbnail.png)](https://youtu.be/cHPOxD0hUVE)
 
