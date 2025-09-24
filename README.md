@@ -8,4 +8,8 @@ This project applies reinforcement learning to teach an AI agent to play Snake. 
 - Visual interface to watch the AI play in real time
 
 # Watch A Demo Video
-[![Watch the video](thumbnail.png)](youtube.com/watch?v=cHPOxD0hUVE&feature=youtu.be)
+<p align="center">
+  <a href="(youtube.com/watch?v=cHPOxD0hUVE&feature=youtu.be">
+    <img src="thumbnail.png" alt="Watch the video" width="600">
+  </a>
+</p>
